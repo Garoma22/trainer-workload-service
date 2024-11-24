@@ -57,10 +57,10 @@ public class TrainerInfoService {
           return newMonth;
         });
 
-
-
     trainingMonth.setTrainingSummaryDuration(trainingMonth.getTrainingSummaryDuration() + dto.getTrainingDuration());
     log.info(trainers.toString());
+
+
   }
 
   private boolean isValidTrainer(TrainerInfo trainer) {
