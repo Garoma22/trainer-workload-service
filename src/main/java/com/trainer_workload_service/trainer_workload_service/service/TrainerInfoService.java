@@ -60,7 +60,6 @@ public class TrainerInfoService {
     trainingMonth.setTrainingSummaryDuration(trainingMonth.getTrainingSummaryDuration() + dto.getTrainingDuration());
     log.info(trainers.toString());
 
-
   }
 
   private boolean isValidTrainer(TrainerInfo trainer) {
