@@ -2,28 +2,31 @@ package com.trainer_workload_service.trainer_workload_service.controller;
 
 
 import com.trainer_workload_service.trainer_workload_service.dto.TrainerWorkloadServiceDto;
-import com.trainer_workload_service.trainer_workload_service.model.TrainerInfo;
 import com.trainer_workload_service.trainer_workload_service.service.TrainerInfoService;
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
+@Slf4j
   @RestController
   public class TrainerController {
 
         @Autowired
     private TrainerInfoService trainerService;
 
+
     @PostMapping("/trainings")
-    public ResponseEntity<List<TrainerInfo>> addTrainingSession(@RequestBody TrainerWorkloadServiceDto dto) {
-    trainerService.processTrainingData(dto);
+    public ResponseEntity<Void> addTrainingSession(@RequestBody TrainerWorkloadServiceDto dto, HttpServletRequest request) {
+      trainerService.processTrainingData(dto);
+      String transactionId = request.getHeader("Transaction-ID");
+      log.info(transactionId);
       return ResponseEntity.ok().build();
     }
-
-
   }
 
 
