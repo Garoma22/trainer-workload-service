@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,13 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 
     @PostMapping("/trainings")
-    public ResponseEntity<Void> addTrainingSession(@RequestBody TrainerWorkloadServiceDto dto, HttpServletRequest request) {
+    public ResponseEntity<Void> processTrainerTraining(@RequestBody TrainerWorkloadServiceDto dto, HttpServletRequest request) {
       trainerService.processTrainingData(dto);
       String transactionId = request.getHeader("Transaction-ID");
       log.info(transactionId);
       return ResponseEntity.ok().build();
     }
+
   }
+
+
 
 
 
