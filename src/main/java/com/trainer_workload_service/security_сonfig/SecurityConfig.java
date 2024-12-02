@@ -1,4 +1,4 @@
-package com.trainer_workload_service.trainer_workload_service.securityConfig;
+package com.trainer_workload_service.security_сonfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,16 +16,18 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .authorizeHttpRequests((authz) -> authz
+            .requestMatchers( "/trainers/*/workload").permitAll()// open it for testing second endpoint
             .anyRequest().authenticated())
         .csrf((csrf) -> csrf.disable())
         .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class)
-//        .addFilterAfter(new LoggingFilter(), JwtTokenFilter.class)
-
-    ; //custom logging filter
+        .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
+
+
+
+
 
   @Bean
   public JwtTokenFilter jwtTokenFilter() {

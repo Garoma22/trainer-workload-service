@@ -1,4 +1,4 @@
-package com.trainer_workload_service.trainer_workload_service.securityConfig;
+package com.trainer_workload_service.security_сonfig;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

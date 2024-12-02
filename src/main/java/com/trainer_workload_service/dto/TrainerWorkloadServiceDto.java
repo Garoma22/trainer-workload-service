@@ -1,4 +1,4 @@
-package com.trainer_workload_service.trainer_workload_service.dto;
+package com.trainer_workload_service.dto;
 
 import java.time.LocalDate;
 import lombok.Data;
