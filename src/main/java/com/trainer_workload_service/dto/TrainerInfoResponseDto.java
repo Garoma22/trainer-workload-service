@@ -13,7 +13,5 @@ public class TrainerInfoResponseDto {
     private String lastName;
     private String status;
     private List<Year> years= new ArrayList<>();
-
-
 }
 

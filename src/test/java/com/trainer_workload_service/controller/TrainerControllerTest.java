@@ -34,34 +34,7 @@ public class TrainerControllerTest {
     trainerController = new TrainerController(trainerInfoService);
   }
 
-  @Test
-  public void testProcessTrainerTraining_logsTransactionId() {
-    // Arrange
-    TrainerWorkloadServiceDto dto = new TrainerWorkloadServiceDto();
-    String transactionId = "12345-transaction-id";
-    when(request.getHeader("Transaction-ID")).thenReturn(transactionId);
 
-    // Act
-    ResponseEntity<Void> response = trainerController.processTrainerTraining(dto, request);
-
-    // Assert
-    verify(trainerInfoService, times(1)).processTrainingData(dto);
-
-    assertEquals(200, response.getStatusCodeValue());
-  }
-
-  @Test
-  public void testProcessTrainerTraining_missingTransactionId() {
-    // Arrange
-    TrainerWorkloadServiceDto dto = new TrainerWorkloadServiceDto();
-    when(request.getHeader("Transaction-ID")).thenReturn(null);
-    // Act
-    ResponseEntity<Void> response = trainerController.processTrainerTraining(dto, request);
-    // Assert
-    verify(trainerInfoService).processTrainingData(dto);
-    log.info("Transaction ID is missing");
-    assertEquals(200, response.getStatusCodeValue());
-  }
 
   //second controller method
 

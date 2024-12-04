@@ -25,10 +25,6 @@ public class SecurityConfig {
     return http.build();
   }
 
-
-
-
-
   @Bean
   public JwtTokenFilter jwtTokenFilter() {
     return new JwtTokenFilter(tokenProvider());

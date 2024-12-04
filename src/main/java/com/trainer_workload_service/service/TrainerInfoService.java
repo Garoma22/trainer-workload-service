@@ -1,5 +1,6 @@
 package com.trainer_workload_service.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trainer_workload_service.dto.TrainerMonthWorkloadDto;
 import com.trainer_workload_service.dto.TrainerWorkloadServiceDto;
 import com.trainer_workload_service.model.Month;
@@ -10,12 +11,20 @@ import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@AllArgsConstructor
+@Data
 public class TrainerInfoService {
+
   private final List<TrainerInfo> trainers = Collections.synchronizedList(new ArrayList<>());
 
   @PostConstruct
@@ -129,11 +138,15 @@ public class TrainerInfoService {
       return trainerMonthWorkloadDto;
   }
 
-  public List<TrainerInfo> getTrainers() {
-    return trainers;
+  @JmsListener(destination = "trainer.workload.queue")
+  public void handleTraining(String jsonMessage) {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      TrainerWorkloadServiceDto dto = objectMapper.readValue(jsonMessage, TrainerWorkloadServiceDto.class);
+      processTrainingData(dto);
+      System.out.println("Message processed: " + dto);
+    } catch (Exception e) {
+      throw new RuntimeException("Deserialization JSON error", e);
+    }
   }
-
-
-
-
 }

@@ -22,22 +22,24 @@ public class TrainerController {
 
   //  @Autowired
   private TrainerInfoService trainerInfoService;
-
-
   @Autowired
   public TrainerController(TrainerInfoService trainerInfoService) { // Конструктор
     this.trainerInfoService = trainerInfoService;
   }
 
 
-  @PostMapping("/trainers/workload")
-  public ResponseEntity<Void> processTrainerTraining(@RequestBody TrainerWorkloadServiceDto dto,
-      HttpServletRequest request) {
-    trainerInfoService.processTrainingData(dto);
-    String transactionId = request.getHeader("Transaction-ID");
-    log.info(transactionId);
-    return ResponseEntity.ok().build();
-  }
+
+
+//we do not need this for ActiveMQ, we have the Listener method in service for this task
+
+//  @PostMapping("/trainers/workload")
+//  public ResponseEntity<Void> processTrainerTraining(@RequestBody TrainerWorkloadServiceDto dto,
+//      HttpServletRequest request) {
+//    trainerInfoService.processTrainingData(dto);
+//    String transactionId = request.getHeader("Transaction-ID");
+//    log.info(transactionId);
+//    return ResponseEntity.ok().build();
+//  }
 
   @GetMapping("/trainers/{trainerUsername}/workload")
   public ResponseEntity<TrainerMonthWorkloadDto> getTrainerLoadingOfMonth(
