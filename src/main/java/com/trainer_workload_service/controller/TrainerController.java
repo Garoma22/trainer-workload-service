@@ -1,6 +1,7 @@
 package com.trainer_workload_service.controller;
 
 
+import com.trainer_workload_service.dto.TrainerInfoResponseDto;
 import com.trainer_workload_service.dto.TrainerWorkloadServiceDto;
 import com.trainer_workload_service.dto.TrainerMonthWorkloadDto;
 import com.trainer_workload_service.service.TrainerInfoService;
@@ -40,15 +41,14 @@ public class TrainerController {
   }
 
   @GetMapping("/trainers/{trainerUsername}/workload")
-  public ResponseEntity<TrainerMonthWorkloadDto> getTrainerLoadingOfMonth(
-      @PathVariable String trainerUsername,
-      @RequestParam int year,
-      @RequestParam int month) {
-    TrainerMonthWorkloadDto response = trainerInfoService.getTrainerMonthData(trainerUsername, year,
-        month);
+  public ResponseEntity<TrainerInfoResponseDto> getTrainerLoadingOfMonth(
+      @PathVariable String trainerUsername) {
+    TrainerInfoResponseDto response = trainerInfoService.getTrainerMonthData(trainerUsername);
     return ResponseEntity.ok(response);
   }
 }
+
+
 
 
 
