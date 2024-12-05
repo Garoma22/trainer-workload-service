@@ -1,6 +1,7 @@
 package com.trainer_workload_service.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trainer_workload_service.dto.TrainerInfoResponseDto;
 import com.trainer_workload_service.dto.TrainerMonthWorkloadDto;
 import com.trainer_workload_service.dto.TrainerWorkloadServiceDto;
 import com.trainer_workload_service.model.Month;
@@ -9,23 +10,30 @@ import com.trainer_workload_service.model.Year;
 import com.trainer_workload_service.utils.TrainerStatus;
 import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
+import com.trainer_workload_service.dto.YearDto;
+
+
 @Slf4j
 @Service
-@AllArgsConstructor
-@Data
 public class TrainerInfoService {
 
-  private final List<TrainerInfo> trainers = Collections.synchronizedList(new ArrayList<>());
+
+  private final Map<String, TrainerInfo> trainers = new HashMap<>();
+
+  private final ObjectMapper objectMapper;
+
+  public TrainerInfoService(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
+
+
 
   @PostConstruct
   public void initTestData() {
@@ -36,19 +44,42 @@ public class TrainerInfoService {
     testTrainer.setStatus(TrainerStatus.ACTIVE);
 
     Year year2024 = new Year(2024);
-    Month november = new Month(11, 10); //for example 10 hours of trainings in november
-    year2024.getMonths().add(november);
+    Month month = new Month(new HashMap<>());
+    month.getMonthDurations().put("november", 10); // example
+    year2024.getMonths().add(month);
     testTrainer.getYears().add(year2024);
+    trainers.put(testTrainer.getUsername(),testTrainer);
 
-    trainers.add(testTrainer);
     log.info("Test data initialized: {}", testTrainer);
   }
 
-  public TrainerInfo getTrainer(String username) {
-    return trainers.stream()
-        .filter(t -> t.getUsername().equals(username))
-        .findFirst()
-        .orElse(null);
+
+  public TrainerInfo getTrainer(String username){
+    return trainers.get(username);
+  }
+
+
+//    @JmsListener(destination = "trainer.workload.queue")
+//  public void handleTraining(String jsonMessage) {
+//    try {
+//      ObjectMapper objectMapper = new ObjectMapper();
+//      TrainerWorkloadServiceDto dto = objectMapper.readValue(jsonMessage, TrainerWorkloadServiceDto.class);
+//      processTrainingData(dto);
+//      System.out.println("Message processed: " + dto);
+//    } catch (Exception e) {
+//      throw new RuntimeException("Deserialization JSON error", e);
+//    }
+//  }
+
+  @JmsListener(destination = "trainer.workload.queue")
+  public void handleTraining(String jsonMessage) {
+    try {
+      TrainerWorkloadServiceDto dto = objectMapper.readValue(jsonMessage, TrainerWorkloadServiceDto.class);
+      processTrainingData(dto);
+      log.info("Message processed: {}", dto);
+    } catch (Exception e) {
+      throw new RuntimeException("Deserialization JSON error", e);
+    }
   }
 
   public synchronized void processTrainingData(TrainerWorkloadServiceDto dto) {
@@ -59,11 +90,11 @@ public class TrainerInfoService {
       trainer.setUsername(dto.getTrainerUsername());
       trainer.setFirstName(dto.getTrainerFirstName());
       trainer.setLastName(dto.getTrainerLastName());
-
       trainer.setStatus(dto.isActive() ? TrainerStatus.ACTIVE : TrainerStatus.INACTIVE);
 
       if (isValidTrainer(trainer)) {
-        trainers.add(trainer);
+        trainers.put(trainer.getUsername(),trainer);
+
       } else {
         throw new IllegalArgumentException("Invalid trainer data (empty username)");
       }
@@ -80,73 +111,56 @@ public class TrainerInfoService {
         });
 
     Month trainingMonth = trainingYear.getMonths().stream()
-        .filter(m -> m.getMonth() == dto.getTrainingDate().getMonthValue())
         .findFirst()
         .orElseGet(() -> {
-          Month newMonth = new Month(dto.getTrainingDate().getMonthValue(), 0);
+          Month newMonth = new Month(new HashMap<>());
           trainingYear.getMonths().add(newMonth);
           return newMonth;
         });
 
-    trainingMonth.setTrainingSummaryDuration(
-        trainingMonth.getTrainingSummaryDuration() + dto.getTrainingDuration());
-    log.info(trainers.toString());
+
+    String monthName = dto.getTrainingDate().getMonth().name().toLowerCase();
+    trainingMonth.getMonthDurations().merge(monthName, dto.getTrainingDuration(), Integer::sum);
+    log.info("Updated month data: {}", trainingMonth);
   }
+
 
   public boolean isValidTrainer(TrainerInfo trainer) {
     return trainer.getUsername() != null && !trainer.getUsername().trim().isEmpty();
   }
 
-  public TrainerMonthWorkloadDto getTrainerMonthData(String trainerUsername, int year, int month) {
+  public TrainerInfoResponseDto getTrainerMonthData(String trainerUsername) {
     TrainerInfo trainer = getTrainer(trainerUsername);
 
     if (trainer == null) {
       throw new IllegalArgumentException("Trainer not found: " + trainerUsername);
     }
 
-    // Проверяем валидность тренера
     if (!isValidTrainer(trainer)) {
       throw new IllegalArgumentException("Invalid trainer data (empty username)");
     }
 
-
-      Year targetYear = trainer.getYears().stream()
-          .filter(y -> y.getYear() == year)
-          .findFirst()
-          .orElseGet(() -> {
-            Year newYear = new Year(year);
-            trainer.getYears().add(newYear);
-            return newYear;
-          });
-
-      Month targetMonth = targetYear.getMonths().stream()
-          .filter(m -> m.getMonth() == month)
-          .findFirst()
-          .orElseGet(() -> {
-            Month newMonth = new Month(month, 0);
-            targetYear.getMonths().add(newMonth);
-            return newMonth;
-          });
-
-      TrainerMonthWorkloadDto trainerMonthWorkloadDto = new TrainerMonthWorkloadDto();
-      trainerMonthWorkloadDto.setTrainerUsername(trainerUsername);
-      trainerMonthWorkloadDto.setYearNum(year);
-      trainerMonthWorkloadDto.setMonthNum(month);
-      trainerMonthWorkloadDto.setWorkloadHours(targetMonth.getTrainingSummaryDuration());
-
-      log.info(String.valueOf(trainerMonthWorkloadDto));
-      return trainerMonthWorkloadDto;
-  }
-
-  @JmsListener(destination = "trainer.workload.queue")
-  public void handleTraining(String jsonMessage) {
-    try {
-      ObjectMapper objectMapper = new ObjectMapper();
-      TrainerWorkloadServiceDto dto = objectMapper.readValue(jsonMessage, TrainerWorkloadServiceDto.class);
-      processTrainingData(dto);
-      System.out.println("Message processed: " + dto);
-    } catch (Exception e) {
-      throw new RuntimeException("Deserialization JSON error", e);
+    List<YearDto> yearDtos = new ArrayList<>();
+    for (Year y : trainer.getYears()) {
+      List<Map<String, Integer>> monthList = new ArrayList<>();
+      for (Month m : y.getMonths()) {
+        monthList.add(m.getMonthDurations());
+      }
+      yearDtos.add(new YearDto(y.getYear(), monthList));
     }
+
+    TrainerInfoResponseDto responseDto = new TrainerInfoResponseDto();
+    responseDto.setUsername(trainer.getUsername());
+    responseDto.setFirstName(trainer.getFirstName());
+    responseDto.setLastName(trainer.getLastName());
+    responseDto.setStatus(trainer.getStatus().name());
+    responseDto.setYears(yearDtos);
+
+    return responseDto;
   }
 }
+
+
+
+
+

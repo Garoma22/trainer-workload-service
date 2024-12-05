@@ -1,6 +1,7 @@
 package com.trainer_workload_service.controller;
 
 
+import com.trainer_workload_service.dto.TrainerInfoResponseDto;
 import com.trainer_workload_service.dto.TrainerWorkloadServiceDto;
 import com.trainer_workload_service.dto.TrainerMonthWorkloadDto;
 import com.trainer_workload_service.service.TrainerInfoService;
@@ -32,22 +33,19 @@ public class TrainerController {
 
 //we do not need this for ActiveMQ, we have the Listener method in service for this task
 
-//  @PostMapping("/trainers/workload")
-//  public ResponseEntity<Void> processTrainerTraining(@RequestBody TrainerWorkloadServiceDto dto,
-//      HttpServletRequest request) {
-//    trainerInfoService.processTrainingData(dto);
-//    String transactionId = request.getHeader("Transaction-ID");
-//    log.info(transactionId);
-//    return ResponseEntity.ok().build();
-//  }
+  @PostMapping("/trainers/workload")
+  public ResponseEntity<Void> processTrainerTraining(@RequestBody TrainerWorkloadServiceDto dto,
+      HttpServletRequest request) {
+    trainerInfoService.processTrainingData(dto);
+    String transactionId = request.getHeader("Transaction-ID");
+    log.info(transactionId);
+    return ResponseEntity.ok().build();
+  }
 
   @GetMapping("/trainers/{trainerUsername}/workload")
-  public ResponseEntity<TrainerMonthWorkloadDto> getTrainerLoadingOfMonth(
-      @PathVariable String trainerUsername,
-      @RequestParam int year,
-      @RequestParam int month) {
-    TrainerMonthWorkloadDto response = trainerInfoService.getTrainerMonthData(trainerUsername, year,
-        month);
+  public ResponseEntity<TrainerInfoResponseDto> getTrainerLoadingOfMonth(
+      @PathVariable String trainerUsername) {
+    TrainerInfoResponseDto response = trainerInfoService.getTrainerMonthData(trainerUsername);
     return ResponseEntity.ok(response);
   }
 }
