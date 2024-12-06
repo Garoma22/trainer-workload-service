@@ -1,5 +1,5 @@
-package com.trainer_workload_service.model;
-import com.trainer_workload_service.utils.TrainerStatus;
+package com.trainerworkloadservice.model;
+import com.trainerworkloadservice.utils.TrainerStatus;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;

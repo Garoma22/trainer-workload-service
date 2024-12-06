@@ -1,4 +1,4 @@
-package com.trainer_workload_service.dto;
+package com.trainerworkloadservice.dto;
 
 
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.trainer_workload_service.config;
+package com.trainerworkloadservice.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;

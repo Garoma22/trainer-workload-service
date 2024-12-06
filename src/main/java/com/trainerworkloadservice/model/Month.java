@@ -12,7 +12,7 @@
 //}
 
 
-package com.trainer_workload_service.model;
+package com.trainerworkloadservice.model;
 
 import java.util.Map;
 import lombok.AllArgsConstructor;

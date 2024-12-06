@@ -1,4 +1,4 @@
-package com.trainer_workload_service.utils;
+package com.trainerworkloadservice.utils;
 
 public enum TrainerStatus {
 

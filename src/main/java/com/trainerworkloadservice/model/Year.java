@@ -1,4 +1,4 @@
-package com.trainer_workload_service.model;
+package com.trainerworkloadservice.model;
 
 
 

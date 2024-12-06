@@ -1,4 +1,4 @@
-package com.trainer_workload_service.security_сonfig;
+package com.trainerworkloadservice.securityсonfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

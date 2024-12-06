@@ -1,4 +1,4 @@
-package com.trainer_workload_service.security_сonfig;
+package com.trainerworkloadservice.securityсonfig;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

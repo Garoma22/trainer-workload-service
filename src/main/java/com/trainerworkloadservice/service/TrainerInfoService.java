@@ -1,13 +1,12 @@
-package com.trainer_workload_service.service;
+package com.trainerworkloadservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.trainer_workload_service.dto.TrainerInfoResponseDto;
-import com.trainer_workload_service.dto.TrainerMonthWorkloadDto;
-import com.trainer_workload_service.dto.TrainerWorkloadServiceDto;
-import com.trainer_workload_service.model.Month;
-import com.trainer_workload_service.model.TrainerInfo;
-import com.trainer_workload_service.model.Year;
-import com.trainer_workload_service.utils.TrainerStatus;
+import com.trainerworkloadservice.dto.TrainerInfoResponseDto;
+import com.trainerworkloadservice.dto.TrainerWorkloadServiceDto;
+import com.trainerworkloadservice.model.Month;
+import com.trainerworkloadservice.model.TrainerInfo;
+import com.trainerworkloadservice.model.Year;
+import com.trainerworkloadservice.utils.TrainerStatus;
 import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,13 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
-import com.trainer_workload_service.dto.YearDto;
+import com.trainerworkloadservice.dto.YearDto;
 
 
 @Slf4j
 @Service
 public class TrainerInfoService {
-
 
   private final Map<String, TrainerInfo> trainers = new HashMap<>();
 
@@ -32,8 +30,6 @@ public class TrainerInfoService {
   public TrainerInfoService(ObjectMapper objectMapper) {
     this.objectMapper = objectMapper;
   }
-
-
 
   @PostConstruct
   public void initTestData() {
@@ -57,19 +53,6 @@ public class TrainerInfoService {
   public TrainerInfo getTrainer(String username){
     return trainers.get(username);
   }
-
-
-//    @JmsListener(destination = "trainer.workload.queue")
-//  public void handleTraining(String jsonMessage) {
-//    try {
-//      ObjectMapper objectMapper = new ObjectMapper();
-//      TrainerWorkloadServiceDto dto = objectMapper.readValue(jsonMessage, TrainerWorkloadServiceDto.class);
-//      processTrainingData(dto);
-//      System.out.println("Message processed: " + dto);
-//    } catch (Exception e) {
-//      throw new RuntimeException("Deserialization JSON error", e);
-//    }
-//  }
 
   @JmsListener(destination = "trainer.workload.queue")
   public void handleTraining(String jsonMessage) {
