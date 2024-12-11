@@ -1,5 +1,6 @@
-package com.trainerworkloadservice.service;
+package com.trainerworkloadservice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trainerworkloadservice.dto.TrainerInfoResponseDto;
 import com.trainerworkloadservice.dto.TrainerWorkloadServiceDto;
@@ -55,14 +56,14 @@ public class TrainerInfoService {
   }
 
   @JmsListener(destination = "trainer.workload.queue")
-  public void handleTraining(String jsonMessage) {
-    try {
+  public void handleTraining(String jsonMessage)
+      throws JsonProcessingException {
+
       TrainerWorkloadServiceDto dto = objectMapper.readValue(jsonMessage, TrainerWorkloadServiceDto.class);
+
       processTrainingData(dto);
       log.info("Message processed: {}", dto);
-    } catch (Exception e) {
-      throw new RuntimeException("Deserialization JSON error", e);
-    }
+
   }
 
   public synchronized void processTrainingData(TrainerWorkloadServiceDto dto) {
@@ -107,7 +108,6 @@ public class TrainerInfoService {
     log.info("Updated month data: {}", trainingMonth);
   }
 
-
   public boolean isValidTrainer(TrainerInfo trainer) {
     return trainer.getUsername() != null && !trainer.getUsername().trim().isEmpty();
   }
@@ -142,8 +142,3 @@ public class TrainerInfoService {
     return responseDto;
   }
 }
-
-
-
-
-

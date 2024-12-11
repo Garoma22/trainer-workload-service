@@ -4,7 +4,6 @@ package com.trainerworkloadservice.dto;
 import lombok.Data;
 
 @Data
-
 public class TrainerMonthWorkloadDto {
 
   private String trainerUsername;
