@@ -1,4 +1,4 @@
-package com.trainer_workload_service.trainer_workload_service;
+package com.trainerworkloadservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

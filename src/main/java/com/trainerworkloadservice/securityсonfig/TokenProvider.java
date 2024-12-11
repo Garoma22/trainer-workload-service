@@ -1,8 +1,9 @@
-package com.trainer_workload_service.trainer_workload_service.securityConfig;
+package com.trainerworkloadservice.securityсonfig;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import java.util.Collections;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,7 +13,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TokenProvider {
-  private final String secretKey = "PL+rgtYceM//T3nOWL4hl4Fa2lblR31Sse/PnUqCOyA=\n";
+
+  @Value("${jwt.secret-key}")
+  private String secretKey;
 
   public Claims getAllClaimsFromToken(String token) {
     return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();

@@ -1,4 +1,5 @@
-package com.trainer_workload_service.trainer_workload_service.model;
+package com.trainerworkloadservice.model;
+import com.trainerworkloadservice.utils.TrainerStatus;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
@@ -8,6 +9,6 @@ public class TrainerInfo {
   private String username;
   private String firstName;
   private String lastName;
-  private String status;
+  private TrainerStatus status;
   private List<Year> years= new ArrayList<>();
 }
