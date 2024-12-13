@@ -1,4 +1,4 @@
-package com.trainer_workload_service.trainer_workload_service.model;
+package com.trainerworkloadservice.model;
 
 
 
@@ -15,7 +15,6 @@ public class Year {
 
   private int year;
   private List<Month> months;
-
 
 
   public Year(int year) {
