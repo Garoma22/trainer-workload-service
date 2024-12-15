@@ -1,4 +1,4 @@
-package com.trainerworkloadservice;
+package com.trainerworkloadservice.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,13 +45,12 @@ public class TrainerInfoService {
     month.getMonthDurations().put("november", 10); // example
     year2024.getMonths().add(month);
     testTrainer.getYears().add(year2024);
-    trainers.put(testTrainer.getUsername(),testTrainer);
+    trainers.put(testTrainer.getUsername(), testTrainer);
 
     log.info("Test data initialized: {}", testTrainer);
   }
 
-
-  public TrainerInfo getTrainer(String username){
+  public TrainerInfo getTrainer(String username) {
     return trainers.get(username);
   }
 
@@ -59,10 +58,11 @@ public class TrainerInfoService {
   public void handleTraining(String jsonMessage)
       throws JsonProcessingException {
 
-      TrainerWorkloadServiceDto dto = objectMapper.readValue(jsonMessage, TrainerWorkloadServiceDto.class);
+    TrainerWorkloadServiceDto dto = objectMapper.readValue(jsonMessage,
+        TrainerWorkloadServiceDto.class);
 
-      processTrainingData(dto);
-      log.info("Message processed: {}", dto);
+    processTrainingData(dto);
+    log.info("Message processed: {}", dto);
 
   }
 
@@ -77,7 +77,8 @@ public class TrainerInfoService {
       trainer.setStatus(dto.isActive() ? TrainerStatus.ACTIVE : TrainerStatus.INACTIVE);
 
       if (isValidTrainer(trainer)) {
-        trainers.put(trainer.getUsername(),trainer);
+        trainers.put(trainer.getUsername(), trainer);
+
 
       } else {
         throw new IllegalArgumentException("Invalid trainer data (empty username)");
@@ -101,7 +102,6 @@ public class TrainerInfoService {
           trainingYear.getMonths().add(newMonth);
           return newMonth;
         });
-
 
     String monthName = dto.getTrainingDate().getMonth().name().toLowerCase();
     trainingMonth.getMonthDurations().merge(monthName, dto.getTrainingDuration(), Integer::sum);

@@ -1,6 +1,6 @@
 package com.trainerworkloadservice.controller;
 
-import com.trainerworkloadservice.TrainerInfoService;
+import com.trainerworkloadservice.service.TrainerInfoService;
 import com.trainerworkloadservice.dto.TrainerInfoResponseDto;
 import com.trainerworkloadservice.dto.YearDto;
 import org.junit.jupiter.api.Test;

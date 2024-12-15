@@ -3,7 +3,6 @@ package com.trainerworkloadservice.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.trainerworkloadservice.TrainerInfoService;
 import com.trainerworkloadservice.dto.TrainerInfoResponseDto;
 import com.trainerworkloadservice.dto.TrainerWorkloadServiceDto;
 import com.trainerworkloadservice.dto.YearDto;
@@ -24,6 +23,7 @@ class TrainerInfoServiceTest {
 
   @Mock
   private ObjectMapper objectMapper;
+
 
   @InjectMocks
   private TrainerInfoService trainerInfoService;

@@ -1,7 +1,5 @@
 package com.trainerworkloadservice.model;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
