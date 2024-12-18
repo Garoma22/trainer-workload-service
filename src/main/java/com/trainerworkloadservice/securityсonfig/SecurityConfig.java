@@ -17,7 +17,7 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .authorizeHttpRequests((authz) -> authz
-            .requestMatchers( "/trainers/*/workload").permitAll()// open it for testing second endpoint
+            .requestMatchers( "/trainers/*/workload").permitAll()
             .anyRequest().authenticated())
         .csrf((csrf) -> csrf.disable())
         .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
