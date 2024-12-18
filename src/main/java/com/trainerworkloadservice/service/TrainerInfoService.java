@@ -42,7 +42,7 @@ public class TrainerInfoService {
 
     Year year2024 = new Year(2024);
     Month month = new Month(new HashMap<>());
-    month.getMonthDurations().put("november", 10); // example
+    month.getMonthDurations().put("november", 10);
     year2024.getMonths().add(month);
     testTrainer.getYears().add(year2024);
     trainers.put(testTrainer.getUsername(), testTrainer);
@@ -71,10 +71,17 @@ public class TrainerInfoService {
 
     if (trainer == null) {
       trainer = new TrainerInfo();
+
+
+
       trainer.setUsername(dto.getTrainerUsername());
       trainer.setFirstName(dto.getTrainerFirstName());
       trainer.setLastName(dto.getTrainerLastName());
       trainer.setStatus(dto.isActive() ? TrainerStatus.ACTIVE : TrainerStatus.INACTIVE);
+
+
+
+
 
       if (isValidTrainer(trainer)) {
         trainers.put(trainer.getUsername(), trainer);
@@ -142,3 +149,4 @@ public class TrainerInfoService {
     return responseDto;
   }
 }
+

@@ -20,4 +20,7 @@ public class Year {
     this.months = new ArrayList<>();
   }
 
+  public static Year of(int year) {
+    return new Year(year);
+  }
 }

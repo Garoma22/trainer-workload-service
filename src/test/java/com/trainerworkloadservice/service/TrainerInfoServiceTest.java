@@ -38,13 +38,13 @@ class TrainerInfoServiceTest {
 
   @Test
   void getTrainer_shouldReturnTrainerInfo_whenUsernameExists() {
-    // Arrange
+
     String username = "test_trainer";
 
-    // Act
+
     TrainerInfo result = trainerInfoService.getTrainer(username);
 
-    // Assert
+
     assertNotNull(result);
     assertEquals("test_trainer", result.getUsername());
     assertEquals("John", result.getFirstName());
@@ -54,7 +54,7 @@ class TrainerInfoServiceTest {
     assertNotNull(result.getYears());
     assertFalse(result.getYears().isEmpty());
 
-    // checking year and month
+
     Year year2024 = result.getYears().get(0);
     assertEquals(2024, year2024.getYear());
     assertNotNull(year2024.getMonths());
@@ -95,7 +95,7 @@ class TrainerInfoServiceTest {
 
   @Test
   void handleTraining_shouldProcessMessageSuccessfully() throws JsonProcessingException {
-    // Arrange
+
     String jsonMessage = """
         {
             "trainerUsername": "new_trainer",
@@ -107,10 +107,10 @@ class TrainerInfoServiceTest {
         }
         """;
 
-    // Act
+
     trainerInfoService.handleTraining(jsonMessage);
 
-    // Assert
+
     TrainerInfo trainer = trainerInfoService.getTrainer("new_trainer");
     assertNotNull(trainer);
     assertEquals("Alice", trainer.getFirstName());
@@ -120,7 +120,7 @@ class TrainerInfoServiceTest {
 
   @Test
   void processTrainingData_shouldAddTrainerIfNotExists() {
-    // Arrange
+
     TrainerWorkloadServiceDto dto = new TrainerWorkloadServiceDto();
     dto.setTrainerUsername("new_trainer");
     dto.setTrainerFirstName("Alice");
@@ -129,10 +129,10 @@ class TrainerInfoServiceTest {
     dto.setTrainingDate(LocalDate.of(2024, 11, 1));
     dto.setTrainingDuration(5);
 
-    // Act
+
     trainerInfoService.processTrainingData(dto);
 
-    // Assert
+
     TrainerInfo trainer = trainerInfoService.getTrainer("new_trainer");
     assertThat(trainer).isNotNull();
     assertThat(trainer.getUsername()).isEqualTo("new_trainer");
@@ -146,16 +146,16 @@ class TrainerInfoServiceTest {
 
   @Test
   void processTrainingData_shouldUpdateExistingTrainerMonthDuration() {
-    // Arrange
+
     TrainerWorkloadServiceDto dto = new TrainerWorkloadServiceDto();
     dto.setTrainerUsername("test_trainer");
     dto.setTrainingDate(LocalDate.of(2024, 11, 1));
     dto.setTrainingDuration(5);
 
-    // Act
+
     trainerInfoService.processTrainingData(dto);
 
-    // Assert
+
     TrainerInfo trainer = trainerInfoService.getTrainer("test_trainer");
     assertThat(trainer).isNotNull();
     assertThat(trainer.getYears()).hasSize(1);
@@ -165,13 +165,13 @@ class TrainerInfoServiceTest {
 
   @Test
   void processTrainingData_shouldThrowExceptionWhenTrainerInvalid() {
-    // Arrange
+
     TrainerWorkloadServiceDto dto = new TrainerWorkloadServiceDto();
     dto.setTrainerUsername("");
     dto.setTrainingDate(LocalDate.of(2024, 11, 1));
     dto.setTrainingDuration(5);
 
-    // Act & Assert
+
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       trainerInfoService.processTrainingData(dto);
     });
@@ -182,13 +182,13 @@ class TrainerInfoServiceTest {
 
   @Test
   void getTrainerMonthData_shouldReturnCorrectTrainerInfoResponseDto() {
-    // Arrange
+
     String username = "test_trainer";
 
-    // Act
+
     TrainerInfoResponseDto responseDto = trainerInfoService.getTrainerMonthData(username);
 
-    // Assert
+
     assertNotNull(responseDto);
     assertEquals("test_trainer", responseDto.getUsername());
     assertEquals("John", responseDto.getFirstName());
@@ -196,7 +196,7 @@ class TrainerInfoServiceTest {
     assertEquals("ACTIVE", responseDto.getStatus());
     assertEquals(1, responseDto.getYears().size());
 
-    // Check year and month details
+
     YearDto yearDto = responseDto.getYears().get(0);
     assertEquals(2024, yearDto.getYear());
     assertEquals(1, yearDto.getMonths().size());
@@ -205,10 +205,10 @@ class TrainerInfoServiceTest {
 
   @Test
   void getTrainerMonthData_shouldThrowExceptionWhenTrainerNotFound() {
-    // Arrange
+
     String nonExistingUsername = "unknown_trainer";
 
-    // Act & Assert
+
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       trainerInfoService.getTrainerMonthData(nonExistingUsername);
     });
@@ -217,12 +217,12 @@ class TrainerInfoServiceTest {
 
   @Test
   void getTrainerMonthData_shouldThrowExceptionWhenTrainerInvalid() {
-    // Arrange
-    TrainerInfo invalidTrainer = new TrainerInfo();
-    invalidTrainer.setUsername(""); // Invalid username
-    trainerInfoService.getTrainer("test_trainer").setUsername(""); // Modify test trainer directly
 
-    // Act & Assert
+    TrainerInfo invalidTrainer = new TrainerInfo();
+    invalidTrainer.setUsername("");
+    trainerInfoService.getTrainer("test_trainer").setUsername("");
+
+
     IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
       trainerInfoService.getTrainerMonthData("test_trainer");
     });
