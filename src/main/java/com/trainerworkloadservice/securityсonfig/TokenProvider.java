@@ -30,30 +30,27 @@ public class TokenProvider {
   }
 
 
+  public Authentication getAuthentication(String token) {
+    Claims claims = getAllClaimsFromToken(token);
+    List<String> roles = claims.get("roles", List.class);
+    List<SimpleGrantedAuthority> authorities;
 
-public Authentication getAuthentication(String token) {
-  Claims claims = getAllClaimsFromToken(token);
-  List<String> roles = claims.get("roles", List.class);
-  List<SimpleGrantedAuthority> authorities;
+    if (roles != null) {
+      authorities = roles.stream()
+          .map(SimpleGrantedAuthority::new)
+          .toList();
+    } else {
+      authorities = Collections.emptyList();
+    }
 
-  if (roles != null) {
-    authorities = roles.stream()
-        .map(SimpleGrantedAuthority::new)
-        .collect(toList());
-  } else {
-    authorities = Collections.emptyList();
+    User principal = new User(claims.getSubject(), "", authorities);
+    return new UsernamePasswordAuthenticationToken(principal, token, authorities);
   }
-
-  User principal = new User(claims.getSubject(), "", authorities);
-  return new UsernamePasswordAuthenticationToken(principal, token, authorities);
-}
-
-
-
 
   public boolean isTokenExpired(String token) {
     return getAllClaimsFromToken(token).getExpiration().before(new Date());
   }
+
   public boolean validateToken(String token) {
     return !isTokenExpired(token);
   }
