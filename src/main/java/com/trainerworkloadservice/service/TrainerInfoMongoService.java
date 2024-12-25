@@ -102,9 +102,6 @@ public class TrainerInfoMongoService {
         dto.getTrainerUsername());
     log.debug("Validation passed for input: {}", dto);
 
-
-
-
     TrainerInfo trainer = repository.findByUsername(dto.getTrainerUsername());
     if (trainer == null) {
       trainer = trainerInfoMapper.toTrainerInfo(dto);
@@ -152,26 +149,5 @@ public class TrainerInfoMongoService {
     }
   }
 }
-
-
-  /*
-  DONE 1. Hardcoded connection to ActiveMQ
-  DONE 2. Generic exceptions should never be thrown (throw new RuntimeException("Deserialization JSON error", e))
-  DONE 3. Still use System.out.println in the code  (comment - only use in legacy class ConsoleInputHandler)
-  DONE 4. Please use converter or mapper for creating dto objects
-  DONE 5. JMS configuration is not support multiple environments.
-  DONE 6. Jwts.parser() is deprecated, try don't use deprecated methods
-  DONE 7. .collect(Collectors.toList()); can be replace to .toList();
-  DONE 8. "catch (Exception e)" - please don't catch general exception, be more specific
-  DONE. Think about how the processTrainingData method can be improved. Please refactor it.
-  10. There are no tests in the trainer-workload-service microservice
-  DONE. Repository still contains comented code.
-  DONE 12. This package contains russian characters: com.trainerworkloadservice.securityconfig
-  DONE 13. Use constants where possible, for example request.getHeader("Authorization"); (HttpHeaders#AUTHORIZATION)
-  DONE 14. Improve SecurityConfig: unnecessary parentheses, .csrf(AbstractHttpConfigurer::disable)
-  DONE 15. Improve your pom files: remove commented code, move version to properties tag, remove commented references to maven repository.
-
-
-   */
 
 

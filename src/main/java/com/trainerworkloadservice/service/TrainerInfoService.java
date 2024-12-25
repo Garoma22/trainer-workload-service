@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trainerworkloadservice.dto.TrainerInfoResponseDto;
 import com.trainerworkloadservice.dto.TrainerWorkloadServiceDto;
+import com.trainerworkloadservice.mapper.TrainerInfoMapper;
 import com.trainerworkloadservice.model.Month;
 import com.trainerworkloadservice.model.TrainerInfo;
 import com.trainerworkloadservice.model.Year;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
@@ -22,14 +24,19 @@ import com.trainerworkloadservice.dto.YearDto;
 
 @Slf4j
 @Service
+
 public class TrainerInfoService {
 
   private final Map<String, TrainerInfo> trainers = new HashMap<>();
 
   private final ObjectMapper objectMapper;
 
-  public TrainerInfoService(ObjectMapper objectMapper) {
+  private final TrainerInfoMapper trainerInfoMapper;
+
+  public TrainerInfoService(ObjectMapper objectMapper, TrainerInfoMapper trainerInfoMapper) {
     this.objectMapper = objectMapper;
+
+    this.trainerInfoMapper = trainerInfoMapper;
   }
 
   @PostConstruct
@@ -70,23 +77,11 @@ public class TrainerInfoService {
     TrainerInfo trainer = getTrainer(dto.getTrainerUsername());
 
     if (trainer == null) {
-      trainer = new TrainerInfo();
 
-
-
-      trainer.setUsername(dto.getTrainerUsername());
-      trainer.setFirstName(dto.getTrainerFirstName());
-      trainer.setLastName(dto.getTrainerLastName());
-      trainer.setStatus(dto.isActive() ? TrainerStatus.ACTIVE : TrainerStatus.INACTIVE);
-
-
-
-
+      trainer = trainerInfoMapper.toTrainerInfo(dto);
 
       if (isValidTrainer(trainer)) {
         trainers.put(trainer.getUsername(), trainer);
-
-
       } else {
         throw new IllegalArgumentException("Invalid trainer data (empty username)");
       }

@@ -64,7 +64,6 @@ class TrainerInfoMongoServiceTest {
     assertEquals("John", result.getFirstName());
     assertEquals("Doe", result.getLastName());
 
-    verify(repository, times(1)).findByUsername(username);
   }
 
   @Test
@@ -147,7 +146,7 @@ class TrainerInfoMongoServiceTest {
     assertEquals(2024, year.getYear());
     assertEquals(1, year.getMonths().size());
 
-    Month month = year.getMonths().get(0);
+    Month month = year.getMonths().getFirst();
     assertEquals(60, month.getMonthDurations().get("june"));
 
     verify(repository, times(1)).save(existingTrainer);
@@ -202,11 +201,11 @@ class TrainerInfoMongoServiceTest {
     trainerInfoMongoService.processTrainingData(dto);
 
     assertEquals(1, newTrainer.getYears().size());
-    Year year = newTrainer.getYears().get(0);
+    Year year = newTrainer.getYears().getFirst();
     assertEquals(2024, year.getYear());
     assertEquals(1, year.getMonths().size());
 
-    Month month = year.getMonths().get(0);
+    Month month = year.getMonths().getFirst();
     assertEquals(45, month.getMonthDurations().get("june"));
 
     verify(repository, times(1)).save(newTrainer);

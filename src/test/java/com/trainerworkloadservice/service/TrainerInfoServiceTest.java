@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.trainerworkloadservice.dto.TrainerInfoResponseDto;
 import com.trainerworkloadservice.dto.TrainerWorkloadServiceDto;
 import com.trainerworkloadservice.dto.YearDto;
+import com.trainerworkloadservice.mapper.TrainerInfoMapper;
 import com.trainerworkloadservice.model.TrainerInfo;
 import com.trainerworkloadservice.model.Year;
 import com.trainerworkloadservice.utils.TrainerStatus;
@@ -24,6 +25,8 @@ class TrainerInfoServiceTest {
   @Mock
   private ObjectMapper objectMapper;
 
+  TrainerInfoMapper trainerInfoMapper;
+
 
   @InjectMocks
   private TrainerInfoService trainerInfoService;
@@ -32,7 +35,7 @@ class TrainerInfoServiceTest {
   void setUp() {
     objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule()); //helps Jackson to deserialize local date
-    trainerInfoService = new TrainerInfoService(objectMapper);
+    trainerInfoService = new TrainerInfoService(objectMapper, trainerInfoMapper);
     trainerInfoService.initTestData();
   }
 
